@@ -1,50 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { Context } from "../../main";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
 import { getJobs } from "../../Redux/actions";
 
-const Jobs = () => {
-  const jobs = useSelector((state) => state.jobs.jobs);
+const SelectedCategoryDetail = () => {
+  const allJobs = useSelector((state) => state.jobs.jobs);
   const loading = useSelector((state) => state.jobs.loading);
-
-  const { isAuthorized } = useContext(Context);
-  const navigateTo = useNavigate();
-
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(getJobs());
-
-    if (!isAuthorized) {
-      navigateTo("/");
-    }
   }, [dispatch]);
-
-  // const [jobs, setJobs] = useState([]);
-
-  // useEffect(() => {
-  //   try {
-  //     axios
-  //       .get("http://localhost:4000/api/v1/job/getall", {
-  //         withCredentials: true,
-  //       })
-  //       .then((res) => {
-  //         setJobs(res.data);
-  //       });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, []);
-  // if (!isAuthorized) {
-  //   navigateTo("/");
-  // }
-
+  const { category } = useParams();
+  const filteredJobs = allJobs.filter(
+    (job) => job.category.toLowerCase() === category.toLowerCase()
+  );
   return (
     <section className="jobs page">
       <div className="container">
-        <h1>ALL AVAILABLE JOBS</h1>
+        <h1>All {category} Jobs</h1>
 
         {loading ? (
           <>
@@ -53,8 +26,8 @@ const Jobs = () => {
         ) : (
           <>
             <div className="banner">
-              {jobs &&
-                jobs.map((element) => {
+              {filteredJobs &&
+                filteredJobs.map((element) => {
                   return (
                     <div className="card" key={element._id}>
                       <p>{element.title}</p>
@@ -72,4 +45,4 @@ const Jobs = () => {
   );
 };
 
-export default Jobs;
+export default SelectedCategoryDetail;

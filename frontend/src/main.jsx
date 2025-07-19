@@ -1,6 +1,8 @@
 import React, { createContext, useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
+import store from "./Redux/store.js";
+import { Provider } from "react-redux";
 
 export const Context = createContext({
   isAuthorized: false,
@@ -26,6 +28,8 @@ const AppWrapper = () => {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AppWrapper />
+    <Provider store={store}>
+      <AppWrapper />
+    </Provider>
   </React.StrictMode>
 );
